@@ -10,7 +10,11 @@ const MainStack = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="LoginScreen" component={Login} />
+        <Stack.Screen
+          name="LoginScreen"
+          component={Login}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="HomeScreen" component={Home} />
       </Stack.Navigator>
     </NavigationContainer>
