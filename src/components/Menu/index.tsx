@@ -21,7 +21,7 @@ const Menu = ({ closeMenu, showMenu }: IMenu) => {
           <Drawer.Item label="Clientes" onPress={() => goTo('ClientsScreen')} />
           <Drawer.Item
             label="Ordens de serviços"
-            onPress={() => goTo('OrderServicesScreen')}
+            onPress={() => goTo('ServiceOrdersScreen')}
           />
         </Drawer.Section>
       </Container>

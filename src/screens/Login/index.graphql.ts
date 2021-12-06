@@ -6,6 +6,7 @@ export const DO_LOGIN = gql`
       id
       name
       login
+      accessToken
     }
   }
 `;
