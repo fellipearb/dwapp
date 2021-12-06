@@ -6,11 +6,13 @@ import Login from '../screens/Login';
 import ServiceOrders from '../screens/ServiceOrders';
 
 import Header from '../components/Header';
+import Clients from '../screens/Clients';
 
 export type RootStackParamList = {
   LoginScreen: undefined;
   HomeScreen: undefined;
   ServiceOrdersScreen: undefined;
+  ClientsScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -36,6 +38,20 @@ const MainStack = () => {
         <Stack.Screen
           name="ServiceOrdersScreen"
           component={ServiceOrders}
+          options={{
+            header: ({ navigation }) => {
+              return (
+                <Header
+                  Title={'Ordens de Serviço'}
+                  goBack={() => navigation.goBack()}
+                />
+              );
+            },
+          }}
+        />
+        <Stack.Screen
+          name="ClientsScreen"
+          component={Clients}
           options={{
             header: ({ navigation }) => {
               return (
