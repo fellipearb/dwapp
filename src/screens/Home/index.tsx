@@ -1,17 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text } from 'react-native';
-import { getUser } from '../../utils/user';
+
+import Container from '../../components/Container';
+import { getUser, IUser } from '../../utils/user';
 
 const Home = () => {
-  const user = async () => {
-    return await getUser();
+  const [user, setUser] = useState<IUser | any>();
+
+  const getUserStorage = async () => {
+    const userStorage = await getUser();
+
+    setUser(userStorage);
   };
+
+  useEffect(() => {
+    getUserStorage();
+  }, []);
 
   return (
     <>
-      <Text>
-        Home {user.name} {user.login}
-      </Text>
+      <Container>
+        <Text>Home {user?.name}</Text>
+      </Container>
     </>
   );
 };
