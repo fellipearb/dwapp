@@ -5,9 +5,9 @@ export const Container = styled.View(
   (props: { showMenu: boolean }) => `
   position: absolute;
   top: 0;
-  width: 90%;
+  width: 80%;
   height: ${Dimensions.get('window').height}px;
-  right: ${props.showMenu ? '10%' : '100%'};
+  right: ${props.showMenu ? '20%' : '100%'};
   background: #fff;
   z-index: 19;
   flex: 1;
