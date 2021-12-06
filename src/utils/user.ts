@@ -25,5 +25,7 @@ export const getUser = async <IUser>() => {
     return data;
   } catch (error) {
     console.log('Something went wrong', error);
+
+    return {};
   }
 };

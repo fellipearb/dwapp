@@ -20,7 +20,7 @@ const Home = () => {
   return (
     <>
       <Container>
-        <Text>Home {user?.name}</Text>
+        <Text>Bem-vindo {user?.name}</Text>
       </Container>
     </>
   );
