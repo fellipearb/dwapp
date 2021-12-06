@@ -16,6 +16,10 @@ const Menu = ({ closeMenu, showMenu }: IMenu) => {
     return navigation.navigate(screen);
   };
 
+  if (!showMenu) {
+    return null;
+  }
+
   return (
     <>
       <Container showMenu={showMenu}>

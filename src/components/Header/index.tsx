@@ -11,19 +11,24 @@ interface IHeader {
 const Header = ({ goBack, Title, Subtitle }: IHeader) => {
   const [showMenu, setShowMenu] = useState(false);
 
-  const toggleBackground = () => setShowMenu(!showMenu);
+  const toggleMenu = () => setShowMenu(!showMenu);
+
+  const goBackMain = () => {
+    goBack && goBack();
+    setShowMenu(false);
+  };
 
   return (
     <>
       <Appbar.Header>
-        {goBack && <Appbar.BackAction onPress={goBack} />}
+        {goBack && <Appbar.BackAction onPress={goBackMain} />}
         {(Title || Subtitle) && (
           <Appbar.Content title={Title} subtitle={Subtitle} />
         )}
-        <Appbar.Action icon="dots-vertical" onPress={toggleBackground} />
+        <Appbar.Action icon="dots-vertical" onPress={toggleMenu} />
       </Appbar.Header>
 
-      <Menu closeMenu={toggleBackground} showMenu={showMenu} />
+      <Menu closeMenu={toggleMenu} showMenu={showMenu} />
     </>
   );
 };

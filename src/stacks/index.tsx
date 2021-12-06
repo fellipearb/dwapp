@@ -37,8 +37,13 @@ const MainStack = () => {
           name="ServiceOrdersScreen"
           component={ServiceOrders}
           options={{
-            header: () => {
-              return <Header Title={'Ordens de Serviço'} />;
+            header: ({ navigation }) => {
+              return (
+                <Header
+                  Title={'Ordens de Serviço'}
+                  goBack={() => navigation.goBack()}
+                />
+              );
             },
           }}
         />
