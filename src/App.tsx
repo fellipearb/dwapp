@@ -1,12 +1,15 @@
 import React from 'react';
 import MainStack from './stacks';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { ApolloProvider } from './providers';
 
 const App = () => {
   return (
-    <PaperProvider>
-      <MainStack />
-    </PaperProvider>
+    <ApolloProvider>
+      <PaperProvider>
+        <MainStack />
+      </PaperProvider>
+    </ApolloProvider>
   );
 };
 
