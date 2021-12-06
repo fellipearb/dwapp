@@ -11,7 +11,10 @@ interface IMenu {
 const Menu = ({ closeMenu, showMenu }: IMenu) => {
   const navigation = useNavigation<any>();
 
-  const goTo = (screen: string) => navigation.navigate(screen);
+  const goTo = (screen: string) => {
+    closeMenu();
+    return navigation.navigate(screen);
+  };
 
   return (
     <>
