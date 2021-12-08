@@ -13,6 +13,21 @@ export const GET_ALL_SERVICE_ORDERS = gql`
       notes
       value
       status_id
+      client {
+        id
+        name
+        email
+        tel
+        cpf
+        cep
+        street
+        number
+        city
+        district
+        state
+        complement
+        notes
+      }
     }
   }
 `;

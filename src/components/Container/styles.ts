@@ -1,5 +1,9 @@
 import styled from 'styled-components/native';
 
+export const SafeContainer = styled.SafeAreaView`
+  flex: 1;
+`;
+
 export const ContainerView = styled.View`
   flex: 1;
   padding: 32px 16px;

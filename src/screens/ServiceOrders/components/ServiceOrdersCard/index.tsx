@@ -13,17 +13,21 @@ interface IServiceOrdersCard {
   value: number;
   status_id: string;
   closedAt: string;
+  client: {
+    id: number;
+    name: number;
+  };
 }
 
 const ServiceOrdersCard = ({
-  client_id,
+  client,
   equipment,
   brand,
 }: IServiceOrdersCard) => {
   return (
     <Card>
       <Card.Content>
-        <Title>Client: {client_id}</Title>
+        <Title>Client: {client?.name}</Title>
         <Paragraph>{equipment}</Paragraph>
         <Paragraph>
           {brand}

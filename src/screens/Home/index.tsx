@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text } from 'react-native';
 
 import Container from '../../components/Container';
+import { SafeContainer } from '../../components/Container/styles';
 import { getUser, IUser } from '../../utils/user';
 
 const Home = () => {
@@ -19,9 +20,11 @@ const Home = () => {
 
   return (
     <>
-      <Container>
-        <Text>Bem-vindo {user?.name}</Text>
-      </Container>
+      <SafeContainer>
+        <Container>
+          <Text>Bem-vindo {user?.name}</Text>
+        </Container>
+      </SafeContainer>
     </>
   );
 };

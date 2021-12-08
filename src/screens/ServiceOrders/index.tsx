@@ -1,7 +1,8 @@
 import { useQuery } from '@apollo/client';
 import React from 'react';
-import { SafeAreaView, ScrollView } from 'react-native';
-import { ContainerView } from '../../components/Container/styles';
+import { FlatList } from 'react-native';
+import Container from '../../components/Container';
+import { SafeContainer } from '../../components/Container/styles';
 import Loading from '../../components/Loading';
 import ServiceOrdersCard from './components/ServiceOrdersCard';
 import { GET_ALL_SERVICE_ORDERS } from './index.graphql';
@@ -10,12 +11,6 @@ import { ContainerCard } from './styles';
 export const ServiceOrders = () => {
   const { data, loading } = useQuery(GET_ALL_SERVICE_ORDERS, {
     fetchPolicy: 'network-only',
-    onCompleted: data => {
-      console.log('data', data);
-    },
-    onError: err => {
-      console.log('err', err);
-    },
   });
 
   const orders = data?.getAllServiceOrders || [];
@@ -25,17 +20,19 @@ export const ServiceOrders = () => {
   }
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <ContainerView>
-          {orders.map((order: any) => (
+    <SafeContainer>
+      <Container>
+        <FlatList
+          data={orders}
+          renderItem={({ item }) => (
             <ContainerCard>
-              <ServiceOrdersCard {...order} />
+              <ServiceOrdersCard {...item} />
             </ContainerCard>
-          ))}
-        </ContainerView>
-      </ScrollView>
-    </SafeAreaView>
+          )}
+          keyExtractor={item => item.id}
+        />
+      </Container>
+    </SafeContainer>
   );
 };
 
