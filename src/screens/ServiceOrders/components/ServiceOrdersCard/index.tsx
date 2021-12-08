@@ -27,7 +27,7 @@ const ServiceOrdersCard = ({
   return (
     <Card>
       <Card.Content>
-        <Title>Client: {client?.name}</Title>
+        <Title>{client?.name}</Title>
         <Paragraph>{equipment}</Paragraph>
         <Paragraph>
           {brand}
