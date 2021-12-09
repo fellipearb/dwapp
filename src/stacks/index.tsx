@@ -55,10 +55,7 @@ const MainStack = () => {
           options={{
             header: ({ navigation }) => {
               return (
-                <Header
-                  Title={'Ordens de Serviço'}
-                  goBack={() => navigation.goBack()}
-                />
+                <Header Title={'Clientes'} goBack={() => navigation.goBack()} />
               );
             },
           }}
