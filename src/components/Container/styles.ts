@@ -17,3 +17,7 @@ export const ContainerCenter = styled.View`
   background: #fff;
   justify-content: center;
 `;
+
+export const ContainerInput = styled.View`
+  margin-bottom: 16px;
+`;

@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 
 import { Button, TextInput } from 'react-native-paper';
 import { LogoImage } from '../../assets/images';
-import { ContainerCenter } from '../../components/Container/styles';
-import { ContainerImage, ContainerInput, Logo } from './styles';
+import {
+  ContainerCenter,
+  ContainerInput,
+} from '../../components/Container/styles';
+import { ContainerImage, Logo } from './styles';
 
 import { DO_LOGIN } from './index.graphql';
 import { useLazyQuery } from '@apollo/client';

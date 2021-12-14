@@ -1,9 +1,5 @@
 import styled from 'styled-components/native';
 
-export const ContainerInput = styled.View`
-  margin-bottom: 16px;
-`;
-
 export const ContainerImage = styled.View`
   align-items: center;
 `;

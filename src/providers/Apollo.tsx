@@ -16,8 +16,6 @@ const authLink = setContext(async (_, { headers }) => {
   const user = await getUser();
   const token = user.accessToken;
 
-  console.log('token', token);
-
   return {
     headers: {
       ...headers,

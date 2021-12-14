@@ -6,14 +6,38 @@ import { SafeContainer } from '../../components/Container/styles';
 import Loading from '../../components/Loading';
 import { GET_ALL_CLIENTS } from './index.graphql';
 import { TextItem } from './styles';
+import { useNavigation } from '@react-navigation/native';
+
+export interface IClient {
+  notes: string;
+  complement: string;
+  state: string;
+  city: string;
+  district: string;
+  number: string;
+  street: string;
+  cep: string;
+  cpf: string;
+  tel: string;
+  email: string;
+  name: string;
+  id: number;
+  content: {
+    tel: string;
+  };
+}
 
 const Clients = () => {
+  const [search, setSearch] = useState('');
+  const navigation = useNavigation<any>();
+
+  const goToClientDetails = (client: IClient) => {
+    navigation.navigate('ClientsDetailsScreen', { client });
+  };
+
   const { data, loading } = useQuery(GET_ALL_CLIENTS, {
     fetchPolicy: 'network-only',
   });
-
-  const [search, setSearch] = useState('');
-
   const filterClients = useCallback(
     (term: string) => {
       if (term) {
@@ -44,24 +68,25 @@ const Clients = () => {
             onChangeText={text => setSearch(text)}
           />
           <List.Section title="Clientes">
-            {clients.map((item: any) => (
+            {clients.map((client: IClient, index: number) => (
               <List.Accordion
-                title={item.name}
-                left={props => <List.Icon {...props} icon="account" />}>
+                title={client.name}
+                left={props => <List.Icon {...props} icon="account" />}
+                key={index}>
                 <List.Item
-                  title={() => <TextItem>{item.content?.tel}</TextItem>}
+                  title={() => <TextItem>{client.content?.tel}</TextItem>}
                   description="Telefone"
                 />
                 <List.Item
-                  title={() => <TextItem>{item.email}</TextItem>}
+                  title={() => <TextItem>{client.email}</TextItem>}
                   description="Email"
                 />
                 <List.Item
-                  title={() => <TextItem>{item.cpf}</TextItem>}
+                  title={() => <TextItem>{client.cpf}</TextItem>}
                   description="CPF"
                 />
                 <List.Item
-                  title={() => <TextItem>{item.cep}</TextItem>}
+                  title={() => <TextItem>{client.cep}</TextItem>}
                   description="CEP"
                 />
                 <List.Item
@@ -69,7 +94,7 @@ const Clients = () => {
                     <Button
                       icon="account-edit"
                       mode="contained"
-                      onPress={() => console.log('Pressed')}>
+                      onPress={() => goToClientDetails(client)}>
                       Editar
                     </Button>
                   )}
