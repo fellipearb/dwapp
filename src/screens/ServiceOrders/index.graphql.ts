@@ -28,6 +28,10 @@ export const GET_ALL_SERVICE_ORDERS = gql`
         complement
         notes
       }
+      images {
+        id
+        path
+      }
     }
   }
 `;

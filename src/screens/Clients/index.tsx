@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { useQuery } from '@apollo/client';
-import { List, TextInput } from 'react-native-paper';
+import { Button, List, TextInput } from 'react-native-paper';
 import { SafeContainer } from '../../components/Container/styles';
 import Loading from '../../components/Loading';
 import { GET_ALL_CLIENTS } from './index.graphql';
@@ -63,6 +63,16 @@ const Clients = () => {
                 <List.Item
                   title={() => <TextItem>{item.cep}</TextItem>}
                   description="CEP"
+                />
+                <List.Item
+                  title={() => (
+                    <Button
+                      icon="account-edit"
+                      mode="contained"
+                      onPress={() => console.log('Pressed')}>
+                      Editar
+                    </Button>
+                  )}
                 />
               </List.Accordion>
             ))}

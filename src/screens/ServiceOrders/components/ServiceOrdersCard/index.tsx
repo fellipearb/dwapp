@@ -15,15 +15,22 @@ interface IServiceOrdersCard {
   closedAt: string;
   client: {
     id: number;
-    name: number;
+    name: string;
   };
+  images?: {
+    id: number;
+    path: string;
+  }[];
 }
 
 const ServiceOrdersCard = ({
   client,
   equipment,
   brand,
+  images,
 }: IServiceOrdersCard) => {
+  const image = images?.length ? images[0].path : 'https://picsum.photos/700';
+
   return (
     <Card>
       <Card.Content>
@@ -34,7 +41,7 @@ const ServiceOrdersCard = ({
           {'\n'}
         </Paragraph>
       </Card.Content>
-      <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+      <Card.Cover source={{ uri: image }} />
       <Card.Actions>
         <Button>Visualizar</Button>
       </Card.Actions>

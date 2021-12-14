@@ -11,8 +11,12 @@ interface IMenu {
 const Menu = ({ closeMenu, showMenu }: IMenu) => {
   const navigation = useNavigation<any>();
 
-  const goTo = (screen: string) => {
+  const goTo = (screen: string, stack?: string) => {
     closeMenu();
+    if (stack) {
+      return navigation.navigate(stack, { screen });
+    }
+
     return navigation.navigate(screen);
   };
 
@@ -25,7 +29,10 @@ const Menu = ({ closeMenu, showMenu }: IMenu) => {
       <Container showMenu={showMenu}>
         <Drawer.Section title="Menu">
           <Drawer.Item label="Home" onPress={() => goTo('HomeScreen')} />
-          <Drawer.Item label="Clientes" onPress={() => goTo('ClientsScreen')} />
+          <Drawer.Item
+            label="Clientes"
+            onPress={() => goTo('ClientsScreen', 'ClientStackScreen')}
+          />
           <Drawer.Item
             label="Ordens de serviços"
             onPress={() => goTo('ServiceOrdersScreen')}
