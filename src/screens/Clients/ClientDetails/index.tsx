@@ -1,14 +1,15 @@
-import { useLazyQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { IClient } from '..';
+import Alert from '../../../components/Alert';
 import {
   ContainerInput,
   ContainerView,
   SafeContainer,
 } from '../../../components/Container/styles';
-import { UPDATE_CLIENT } from '../index.graphql';
+import { INSERT_CLIENT, UPDATE_CLIENT } from '../index.graphql';
 
 interface IClientDetails {
   route: {
@@ -54,15 +55,58 @@ const ClientDetails = ({ route }: IClientDetails) => {
     };
   };
 
-  const [doUpdate, { loading: UPDATE_LOADING }] = useLazyQuery(UPDATE_CLIENT, {
+  const [errorModal, setErrorModal] = useState<boolean>(false);
+  const [successModal, setSuccessModal] = useState<boolean>(false);
+
+  const alertModalError = {
+    title: 'Erro',
+    text: 'Erro ao atualizar cliente',
+    visible: true,
+    toggleDialog: () => setErrorModal(false),
+  };
+
+  const alertModalSuccess = {
+    title: 'Sucesso!',
+    text: 'Sucesso ao atualizar cliente',
+    visible: true,
+    toggleDialog: () => setSuccessModal(false),
+  };
+
+  const [doInsert, { loading: INSERT_LOADING }] = useMutation(INSERT_CLIENT, {
     fetchPolicy: 'network-only',
     variables: {
       clientData: getInputData(),
     },
-    onCompleted: data => {
-      console.log('data', data);
+    onCompleted: () => {
+      setSuccessModal(true);
+    },
+    onError: err => {
+      console.error('err', err);
+      setErrorModal(true);
     },
   });
+
+  const [doUpdate, { loading: UPDATE_LOADING }] = useMutation(UPDATE_CLIENT, {
+    fetchPolicy: 'network-only',
+    variables: {
+      clientData: getInputData(),
+    },
+    onCompleted: () => {
+      setSuccessModal(true);
+    },
+    onError: err => {
+      console.error('err', err);
+      setErrorModal(true);
+    },
+  });
+
+  if (successModal) {
+    return <Alert {...alertModalSuccess} />;
+  }
+
+  if (errorModal) {
+    return <Alert {...alertModalError} />;
+  }
 
   return (
     <SafeContainer>
@@ -90,6 +134,7 @@ const ClientDetails = ({ route }: IClientDetails) => {
               autoCapitalize="none"
               value={tel}
               onChangeText={text => setTel(text)}
+              keyboardType="numeric"
             />
           </ContainerInput>
           <ContainerInput>
@@ -98,6 +143,7 @@ const ClientDetails = ({ route }: IClientDetails) => {
               autoCapitalize="none"
               value={cpf}
               onChangeText={text => setCpf(text)}
+              keyboardType="numeric"
             />
           </ContainerInput>
           <ContainerInput>
@@ -106,6 +152,7 @@ const ClientDetails = ({ route }: IClientDetails) => {
               autoCapitalize="none"
               value={cep}
               onChangeText={text => setCep(text)}
+              keyboardType="numeric"
             />
           </ContainerInput>
           <ContainerInput>
@@ -122,6 +169,7 @@ const ClientDetails = ({ route }: IClientDetails) => {
               autoCapitalize="none"
               value={number}
               onChangeText={text => setNumber(text)}
+              keyboardType="numeric"
             />
           </ContainerInput>
           <ContainerInput>
@@ -166,8 +214,8 @@ const ClientDetails = ({ route }: IClientDetails) => {
           </ContainerInput>
           <Button
             mode="contained"
-            loading={UPDATE_LOADING}
-            onPress={client ? doUpdate : () => {}}>
+            loading={UPDATE_LOADING || INSERT_LOADING}
+            onPress={client ? doUpdate : doInsert}>
             {client ? 'Alterar' : 'Salvar'}
           </Button>
         </ScrollView>

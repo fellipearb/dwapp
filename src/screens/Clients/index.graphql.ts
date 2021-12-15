@@ -23,25 +23,21 @@ export const GET_ALL_CLIENTS = gql`
   }
 `;
 
-export const UPDATE_CLIENT = gql`
-  query GetAllClients {
-    getAllClients {
-      notes
-      complement
-      state
-      city
-      district
-      number
-      street
-      cep
-      cpf
-      tel
-      email
-      name
+export const INSERT_CLIENT = gql`
+  mutation storeClient($clientData: ClientInput!) {
+    storeClient(ClientData: $clientData) {
       id
-      content {
-        tel
-      }
+      name
+      complement
+    }
+  }
+`;
+
+export const UPDATE_CLIENT = gql`
+  mutation UpdateClient($clientData: ClientInput!) {
+    updateClient(ClientData: $clientData) {
+      id
+      name
     }
   }
 `;

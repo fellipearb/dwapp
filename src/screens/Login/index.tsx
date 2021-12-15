@@ -12,12 +12,22 @@ import { DO_LOGIN } from './index.graphql';
 import { useLazyQuery } from '@apollo/client';
 import { storeUser } from '../../utils/user';
 import { useNavigation } from '@react-navigation/core';
+import Alert from '../../components/Alert';
 
 const Login = () => {
   const navigation = useNavigation<any>();
 
   const [login, setLogin] = useState<string>();
   const [password, setPassword] = useState<string>();
+
+  const [errorModal, setErrorModal] = useState<boolean>(false);
+
+  const alertModalError = {
+    title: 'Erro',
+    text: 'Usuário e/ou senha inválidos',
+    visible: true,
+    toggleDialog: () => setErrorModal(!errorModal),
+  };
 
   const [doLogin, { loading }] = useLazyQuery(DO_LOGIN, {
     fetchPolicy: 'network-only',
@@ -34,8 +44,14 @@ const Login = () => {
     },
     onError: err => {
       console.log('err', err);
+
+      setErrorModal(!errorModal);
     },
   });
+
+  if (errorModal) {
+    return <Alert {...alertModalError} />;
+  }
 
   return (
     <ContainerCenter>

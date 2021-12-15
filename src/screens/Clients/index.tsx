@@ -2,10 +2,13 @@ import React, { useCallback, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { useQuery } from '@apollo/client';
 import { Button, List, TextInput } from 'react-native-paper';
-import { SafeContainer } from '../../components/Container/styles';
+import {
+  ContainerView,
+  SafeContainer,
+} from '../../components/Container/styles';
 import Loading from '../../components/Loading';
 import { GET_ALL_CLIENTS } from './index.graphql';
-import { TextItem } from './styles';
+import { ButtonClient, TextItem } from './styles';
 import { useNavigation } from '@react-navigation/native';
 
 export interface IClient {
@@ -31,7 +34,7 @@ const Clients = () => {
   const [search, setSearch] = useState('');
   const navigation = useNavigation<any>();
 
-  const goToClientDetails = (client: IClient) => {
+  const goToClientDetails = (client?: IClient) => {
     navigation.navigate('ClientsDetailsScreen', { client });
   };
 
@@ -60,8 +63,14 @@ const Clients = () => {
 
   return (
     <SafeContainer>
-      <ScrollView>
-        <>
+      <ContainerView>
+        <ScrollView>
+          <ButtonClient
+            icon="account-plus"
+            mode="contained"
+            onPress={() => goToClientDetails()}>
+            Adicionar cliente
+          </ButtonClient>
           <TextInput
             label="Buscar"
             value={search}
@@ -102,8 +111,8 @@ const Clients = () => {
               </List.Accordion>
             ))}
           </List.Section>
-        </>
-      </ScrollView>
+        </ScrollView>
+      </ContainerView>
     </SafeContainer>
   );
 };
