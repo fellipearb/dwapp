@@ -67,7 +67,7 @@ const ClientDetails = ({ route }: IClientDetails) => {
 
   const alertModalSuccess = {
     title: 'Sucesso!',
-    text: 'Sucesso ao atualizar cliente',
+    text: 'Sucesso ao inserir/atualizar cliente',
     visible: true,
     toggleDialog: () => setSuccessModal(false),
   };

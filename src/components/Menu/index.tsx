@@ -35,7 +35,9 @@ const Menu = ({ closeMenu, showMenu }: IMenu) => {
           />
           <Drawer.Item
             label="Ordens de serviços"
-            onPress={() => goTo('ServiceOrdersScreen')}
+            onPress={() =>
+              goTo('ServiceOrdersScreen', 'ServiceOrdersStackScreen')
+            }
           />
         </Drawer.Section>
       </Container>

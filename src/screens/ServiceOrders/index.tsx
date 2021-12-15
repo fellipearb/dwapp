@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FlatList } from 'react-native';
 import Container from '../../components/Container';
@@ -8,7 +9,36 @@ import ServiceOrdersCard from './components/ServiceOrdersCard';
 import { GET_ALL_SERVICE_ORDERS } from './index.graphql';
 import { ContainerCard } from './styles';
 
+export interface IServiceOrders {
+  id: number;
+  client_id: number;
+  equipment: string;
+  brand: string;
+  identification: string;
+  reports: string;
+  description: string;
+  notes: string;
+  value: number;
+  status_id: string;
+  closedAt: string;
+  client: {
+    id: number;
+    name: string;
+  };
+  images?: {
+    id: number;
+    path: string;
+  }[];
+}
+
 export const ServiceOrders = () => {
+  const navigation = useNavigation<any>();
+
+  const goToDetails = (order: IServiceOrders) =>
+    navigation.navigate('ServiceOrdersDetailsScreen', {
+      order,
+    });
+
   const { data, loading } = useQuery(GET_ALL_SERVICE_ORDERS, {
     fetchPolicy: 'network-only',
   });
@@ -26,7 +56,10 @@ export const ServiceOrders = () => {
           data={orders}
           renderItem={({ item }) => (
             <ContainerCard>
-              <ServiceOrdersCard {...item} />
+              <ServiceOrdersCard
+                order={item}
+                goToDetails={() => goToDetails(item)}
+              />
             </ContainerCard>
           )}
           keyExtractor={item => item.id}
