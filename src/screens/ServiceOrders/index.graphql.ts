@@ -32,6 +32,11 @@ export const GET_ALL_SERVICE_ORDERS = gql`
         id
         path
       }
+      status {
+        id
+        name
+        types
+      }
     }
   }
 `;

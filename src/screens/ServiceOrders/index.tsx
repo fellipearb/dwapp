@@ -29,6 +29,11 @@ export interface IServiceOrders {
     id: number;
     path: string;
   }[];
+  status?: {
+    id: number;
+    name: string;
+    types: string;
+  };
 }
 
 export const ServiceOrders = () => {
