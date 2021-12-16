@@ -50,3 +50,20 @@ export const GET_ALL_SERVICE_ORDERS_STATUS = gql`
     }
   }
 `;
+
+export const INSERT_SERVICE_ORDER = gql`
+  mutation StoreServiceOrder($serviceOrderData: ServiceOrdersInput!) {
+    storeServiceOrder(ServiceOrderData: $serviceOrderData) {
+      id
+      client_id
+    }
+  }
+`;
+
+export const UPDATE_SERVICE_ORDER = gql`
+  mutation UpdateServiceOrder($serviceOrderData: ServiceOrdersInput!) {
+    updateServiceOrder(ServiceOrderData: $serviceOrderData) {
+      id
+    }
+  }
+`;

@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FlatList } from 'react-native';
 import Container from '../../components/Container';
@@ -42,11 +42,15 @@ export const ServiceOrders = () => {
       order,
     });
 
-  const { data, loading } = useQuery(GET_ALL_SERVICE_ORDERS, {
+  const { data, loading, refetch } = useQuery(GET_ALL_SERVICE_ORDERS, {
     fetchPolicy: 'network-only',
   });
 
   const orders = data?.getAllServiceOrders || [];
+
+  useFocusEffect(() => {
+    refetch();
+  });
 
   if (loading) {
     return <Loading />;

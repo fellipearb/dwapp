@@ -1,19 +1,24 @@
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import React, { useCallback, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { IServiceOrders } from '..';
+import Alert from '../../../components/Alert';
 import {
   ContainerInput,
   ContainerView,
   SafeContainer,
 } from '../../../components/Container/styles';
 import Loading from '../../../components/Loading';
-import { formatReal } from '../../../utils/money';
+import { formatFloatValue, formatReal } from '../../../utils/money';
 import { IClient } from '../../Clients';
 import { GET_ALL_CLIENTS } from '../../Clients/index.graphql';
 import { IStatus } from '../../ServiceOrdersStatus';
-import { GET_ALL_SERVICE_ORDERS_STATUS } from '../index.graphql';
+import {
+  GET_ALL_SERVICE_ORDERS_STATUS,
+  INSERT_SERVICE_ORDER,
+  UPDATE_SERVICE_ORDER,
+} from '../index.graphql';
 import ChooseOptions from './components/ChooseOptions';
 import { ContainerImages, Image } from './styles';
 
@@ -28,15 +33,18 @@ interface IClientDetails {
 const ServiceOrdersDetails = ({ route }: IClientDetails) => {
   const { order } = route.params;
 
+  /**
+   * FIELDS
+   */
   const seFormatMoney = (value: string) => setValue(formatReal(value));
 
   const [client, setClient] = useState<IClient | undefined>(order?.client);
-  const [idClient, setIdClient] = useState<string | number>(
+  const [idClient, setIdClient] = useState<string>(
     order?.client?.id?.toString() || '0',
   );
 
   const [status, setStatus] = useState<IStatus | undefined>(order?.status);
-  const [idStatus, setIdStatus] = useState<string | number>(
+  const [idStatus, setIdStatus] = useState<string>(
     order?.status?.id?.toString() || '0',
   );
 
@@ -55,9 +63,28 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
   const [toggleCLientList, setToggleClientList] = useState<boolean>(false);
   const [toggleStatusList, setToggleStatusList] = useState<boolean>(false);
 
-  const toggleClientListAction = () => setToggleClientList(!toggleCLientList);
-  const toggleStatusListAction = () => setToggleStatusList(!toggleStatusList);
+  const [errorModal, setErrorModal] = useState<boolean>(false);
+  const [successModal, setSuccessModal] = useState<boolean>(false);
 
+  const getInputData = () => {
+    return {
+      id: order?.id,
+      client_id: parseInt(idClient, 10),
+      brand,
+      status_id: parseInt(idStatus, 10),
+      equipment,
+      identification,
+      reports,
+      description,
+      notes,
+      value: value ? formatFloatValue(value) : 0,
+      // images: null,
+    };
+  };
+
+  /**
+   * QUERIES AND MUTATIONS
+   */
   const { data: allClients, loading: CLIENT_LOADING } = useQuery(
     GET_ALL_CLIENTS,
     {
@@ -72,9 +99,48 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
     },
   );
 
+  const [doInsert, { loading: INSERT_LOADING }] = useMutation(
+    INSERT_SERVICE_ORDER,
+    {
+      fetchPolicy: 'network-only',
+      variables: {
+        serviceOrderData: getInputData(),
+      },
+      onCompleted: () => {
+        setSuccessModal(true);
+      },
+      onError: () => {
+        setErrorModal(true);
+      },
+    },
+  );
+
+  const [doUpdate, { loading: UPDATE_LOADING }] = useMutation(
+    UPDATE_SERVICE_ORDER,
+    {
+      fetchPolicy: 'network-only',
+      variables: {
+        serviceOrderData: getInputData(),
+      },
+      onCompleted: () => {
+        setSuccessModal(true);
+      },
+      onError: () => {
+        setErrorModal(true);
+      },
+    },
+  );
+
+  /**
+   * FNS TO CHANGE CLIENT AND STATUS
+   */
+
+  const toggleClientListAction = () => setToggleClientList(!toggleCLientList);
+  const toggleStatusListAction = () => setToggleStatusList(!toggleStatusList);
+
   const changeClient = useCallback(
     (id: number | string) => {
-      setIdClient(id);
+      setIdClient(id.toString());
 
       const currentClient = allClients?.getAllClients?.find(
         (c: IClient) => c.id.toString() === id,
@@ -89,7 +155,7 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
 
   const changeStatus = useCallback(
     (id: number | string) => {
-      setIdStatus(id);
+      setIdStatus(id.toString());
 
       const currentStatus = allStatus?.getAllStatus?.find(
         (c: IStatus) => c.id.toString() === id,
@@ -102,8 +168,19 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
     [allStatus],
   );
 
-  const doUpdate = () => {};
-  const doInsert = () => {};
+  const alertModalError = {
+    title: 'Erro',
+    text: 'Erro ao inserir/atualizar OS',
+    visible: true,
+    toggleDialog: () => setErrorModal(false),
+  };
+
+  const alertModalSuccess = {
+    title: 'Sucesso!',
+    text: 'Sucesso ao inserir/atualizar OS',
+    visible: true,
+    toggleDialog: () => setSuccessModal(false),
+  };
 
   if (CLIENT_LOADING || STATUS_LOADING) {
     return <Loading />;
@@ -112,8 +189,8 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
   if (toggleCLientList) {
     return (
       <ChooseOptions
-        clientList={allClients?.getAllClients}
-        client={idClient}
+        list={allClients?.getAllClients}
+        id={idClient}
         setValue={changeClient}
         hideDialog={toggleClientListAction}
       />
@@ -123,12 +200,20 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
   if (toggleStatusList) {
     return (
       <ChooseOptions
-        clientList={allStatus?.getAllStatus}
-        client={idStatus}
+        list={allStatus?.getAllStatus}
+        id={idStatus}
         setValue={changeStatus}
         hideDialog={toggleStatusListAction}
       />
     );
+  }
+
+  if (successModal) {
+    return <Alert {...alertModalSuccess} />;
+  }
+
+  if (errorModal) {
+    return <Alert {...alertModalError} />;
   }
 
   return (
@@ -218,13 +303,13 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
               <Image source={{ uri: image.path }} key={image.id} />
             ))}
           </ContainerImages>
-          <Button
-            mode="contained"
-            loading={CLIENT_LOADING}
-            onPress={order ? doUpdate : doInsert}>
-            {order ? 'Alterar' : 'Salvar'}
-          </Button>
         </ScrollView>
+        <Button
+          mode="contained"
+          loading={CLIENT_LOADING || INSERT_LOADING || UPDATE_LOADING}
+          onPress={order ? doUpdate : doInsert}>
+          {order ? 'Alterar' : 'Salvar'}
+        </Button>
       </ContainerView>
     </SafeContainer>
   );
