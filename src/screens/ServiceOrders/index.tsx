@@ -5,9 +5,10 @@ import { FlatList } from 'react-native';
 import Container from '../../components/Container';
 import { SafeContainer } from '../../components/Container/styles';
 import Loading from '../../components/Loading';
+import { IClient } from '../Clients';
 import ServiceOrdersCard from './components/ServiceOrdersCard';
 import { GET_ALL_SERVICE_ORDERS } from './index.graphql';
-import { ContainerCard } from './styles';
+import { ButtonServiceOrder, ContainerCard } from './styles';
 
 export interface IServiceOrders {
   id: number;
@@ -21,10 +22,7 @@ export interface IServiceOrders {
   value: number;
   status_id: string;
   closedAt: string;
-  client: {
-    id: number;
-    name: string;
-  };
+  client: IClient;
   images?: {
     id: number;
     path: string;
@@ -39,7 +37,7 @@ export interface IServiceOrders {
 export const ServiceOrders = () => {
   const navigation = useNavigation<any>();
 
-  const goToDetails = (order: IServiceOrders) =>
+  const goToDetails = (order?: IServiceOrders) =>
     navigation.navigate('ServiceOrdersDetailsScreen', {
       order,
     });
@@ -59,6 +57,14 @@ export const ServiceOrders = () => {
       <Container>
         <FlatList
           data={orders}
+          ListHeaderComponent={
+            <ButtonServiceOrder
+              icon="account-plus"
+              mode="contained"
+              onPress={() => goToDetails()}>
+              Adicionar Ordem de Serviço
+            </ButtonServiceOrder>
+          }
           renderItem={({ item }) => (
             <ContainerCard>
               <ServiceOrdersCard

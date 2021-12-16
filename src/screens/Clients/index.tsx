@@ -41,6 +41,7 @@ const Clients = () => {
   const { data, loading } = useQuery(GET_ALL_CLIENTS, {
     fetchPolicy: 'network-only',
   });
+
   const filterClients = useCallback(
     (term: string) => {
       if (term) {

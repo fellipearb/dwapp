@@ -40,3 +40,13 @@ export const GET_ALL_SERVICE_ORDERS = gql`
     }
   }
 `;
+
+export const GET_ALL_SERVICE_ORDERS_STATUS = gql`
+  query GetAllStatus {
+    getAllStatus {
+      id
+      name
+      types
+    }
+  }
+`;
