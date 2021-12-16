@@ -14,7 +14,7 @@ import { IClient } from '../../Clients';
 import { GET_ALL_CLIENTS } from '../../Clients/index.graphql';
 import { IStatus } from '../../ServiceOrdersStatus';
 import { GET_ALL_SERVICE_ORDERS_STATUS } from '../index.graphql';
-import ChooseClient from './components/ChooseClient';
+import ChooseOptions from './components/ChooseOptions';
 import { ContainerImages, Image } from './styles';
 
 interface IClientDetails {
@@ -111,7 +111,7 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
 
   if (toggleCLientList) {
     return (
-      <ChooseClient
+      <ChooseOptions
         clientList={allClients?.getAllClients}
         client={idClient}
         setValue={changeClient}
@@ -122,7 +122,7 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
 
   if (toggleStatusList) {
     return (
-      <ChooseClient
+      <ChooseOptions
         clientList={allStatus?.getAllStatus}
         client={idStatus}
         setValue={changeStatus}
