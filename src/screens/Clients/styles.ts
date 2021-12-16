@@ -7,5 +7,13 @@ export const TextItem = styled.Text`
 `;
 
 export const ButtonClient = styled(Button)`
-  margin-bottom: 16px;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 50px;
+  height: 50px;
+  z-index: 9;
+  border-radius: 25px;
+  align-items: center;
+  justify-content: center;
 `;

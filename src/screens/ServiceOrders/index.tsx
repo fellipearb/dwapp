@@ -1,14 +1,15 @@
 import { useQuery } from '@apollo/client';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { FlatList } from 'react-native';
+import { Button, Text, TextInput } from 'react-native-paper';
 import Container from '../../components/Container';
 import { SafeContainer } from '../../components/Container/styles';
 import Loading from '../../components/Loading';
 import { IClient } from '../Clients';
 import ServiceOrdersCard from './components/ServiceOrdersCard';
 import { GET_ALL_SERVICE_ORDERS } from './index.graphql';
-import { ButtonServiceOrder, ContainerCard } from './styles';
+import { ButtonServiceOrder, ContainerButtons, ContainerCard } from './styles';
 
 export interface IServiceOrders {
   id: number;
@@ -40,6 +41,9 @@ export interface IServiceOrders {
 export const ServiceOrders = () => {
   const navigation = useNavigation<any>();
 
+  const [search, setSearch] = useState('');
+  const [searchBy, setSearchBy] = useState('os');
+
   const goToDetails = (order?: IServiceOrders) =>
     navigation.navigate('ServiceOrdersDetailsScreen', {
       order,
@@ -49,7 +53,30 @@ export const ServiceOrders = () => {
     fetchPolicy: 'network-only',
   });
 
-  const orders = data?.getAllServiceOrders || [];
+  const filterOrders = useCallback(() => {
+    const regex = new RegExp(search, 'gi');
+
+    if (search && searchBy === 'os') {
+      return data?.getAllServiceOrders.filter(
+        (order: IServiceOrders) =>
+          order?.id?.toString().search(regex) > -1 ||
+          order?.equipment?.toString().search(regex) > -1 ||
+          order?.identification?.toString().search(regex) > -1,
+      );
+    }
+
+    if (search && searchBy === 'client') {
+      return data?.getAllServiceOrders.filter(
+        (order: IServiceOrders) =>
+          order?.client?.name?.search(regex) > -1 ||
+          order?.client?.tel?.search(regex) > -1,
+      );
+    }
+
+    return data?.getAllServiceOrders || [];
+  }, [data?.getAllServiceOrders, search, searchBy]);
+
+  const orders = filterOrders();
 
   useFocusEffect(() => {
     refetch();
@@ -62,15 +89,40 @@ export const ServiceOrders = () => {
   return (
     <SafeContainer>
       <Container>
+        {
+          //@ts-ignore
+          <ButtonServiceOrder
+            icon="file-plus"
+            mode="contained"
+            onPress={() => goToDetails()}
+            compact
+          />
+        }
         <FlatList
           data={orders}
           ListHeaderComponent={
-            <ButtonServiceOrder
-              icon="account-plus"
-              mode="contained"
-              onPress={() => goToDetails()}>
-              Adicionar Ordem de Serviço
-            </ButtonServiceOrder>
+            <>
+              <Text>Filtre por:</Text>
+              <ContainerButtons>
+                <Button
+                  icon="file"
+                  mode={searchBy === 'os' ? 'contained' : 'outlined'}
+                  onPress={() => setSearchBy('os')}>
+                  Ordem de Serviço
+                </Button>
+                <Button
+                  icon="account"
+                  mode={searchBy === 'client' ? 'contained' : 'outlined'}
+                  onPress={() => setSearchBy('client')}>
+                  Client
+                </Button>
+              </ContainerButtons>
+              <TextInput
+                label="Buscar"
+                value={search}
+                onChangeText={text => setSearch(text)}
+              />
+            </>
           }
           renderItem={({ item }) => (
             <ContainerCard>

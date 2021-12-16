@@ -47,7 +47,7 @@ const Clients = () => {
       if (term) {
         const regex = new RegExp(term, 'gi');
         return data?.getAllClients.filter(
-          (client: any) => client.name.search(regex) > -1,
+          (client: IClient) => client.name.search(regex) > -1,
         );
       }
 
@@ -65,13 +65,16 @@ const Clients = () => {
   return (
     <SafeContainer>
       <ContainerView>
-        <ScrollView>
+        {
+          //@ts-ignore
           <ButtonClient
             icon="account-plus"
             mode="contained"
-            onPress={() => goToClientDetails()}>
-            Adicionar cliente
-          </ButtonClient>
+            onPress={() => goToClientDetails()}
+            compact
+          />
+        }
+        <ScrollView>
           <TextInput
             label="Buscar"
             value={search}
