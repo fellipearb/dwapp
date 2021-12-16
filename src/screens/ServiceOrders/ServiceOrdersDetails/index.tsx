@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { IServiceOrders } from '..';
@@ -14,6 +14,7 @@ import { IClient } from '../../Clients';
 import { GET_ALL_CLIENTS } from '../../Clients/index.graphql';
 import { IStatus } from '../../ServiceOrdersStatus';
 import { GET_ALL_SERVICE_ORDERS_STATUS } from '../index.graphql';
+import ChooseClient from './components/ChooseClient';
 import { ContainerImages, Image } from './styles';
 
 interface IClientDetails {
@@ -29,8 +30,15 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
 
   const seFormatMoney = (value: string) => setValue(formatReal(value));
 
-  const [client, setClient] = useState<IClient>(order?.client);
-  const [status, setStatus] = useState<IStatus>(order?.status);
+  const [client, setClient] = useState<IClient | undefined>(order?.client);
+  const [idClient, setIdClient] = useState<string | number>(
+    order?.client?.id?.toString() || '0',
+  );
+
+  const [status, setStatus] = useState<IStatus | undefined>(order?.status);
+  const [idStatus, setIdStatus] = useState<string | number>(
+    order?.status?.id?.toString() || '0',
+  );
 
   const [equipment, setEquipment] = useState<string>(order?.equipment || '');
   const [brand, setBrand] = useState<string>(order?.brand || '');
@@ -43,6 +51,12 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
   );
   const [notes, setNotes] = useState<string>(order?.notes || '');
   const [value, setValue] = useState<string>(formatReal(order?.value) || '0');
+
+  const [toggleCLientList, setToggleClientList] = useState<boolean>(false);
+  const [toggleStatusList, setToggleStatusList] = useState<boolean>(false);
+
+  const toggleClientListAction = () => setToggleClientList(!toggleCLientList);
+  const toggleStatusListAction = () => setToggleStatusList(!toggleStatusList);
 
   const { data: allClients, loading: CLIENT_LOADING } = useQuery(
     GET_ALL_CLIENTS,
@@ -58,11 +72,63 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
     },
   );
 
+  const changeClient = useCallback(
+    (id: number | string) => {
+      setIdClient(id);
+
+      const currentClient = allClients?.getAllClients?.find(
+        (c: IClient) => c.id.toString() === id,
+      );
+
+      if (currentClient) {
+        setClient(currentClient);
+      }
+    },
+    [allClients],
+  );
+
+  const changeStatus = useCallback(
+    (id: number | string) => {
+      setIdStatus(id);
+
+      const currentStatus = allStatus?.getAllStatus?.find(
+        (c: IStatus) => c.id.toString() === id,
+      );
+
+      if (currentStatus) {
+        setStatus(currentStatus);
+      }
+    },
+    [allStatus],
+  );
+
   const doUpdate = () => {};
   const doInsert = () => {};
 
   if (CLIENT_LOADING || STATUS_LOADING) {
     return <Loading />;
+  }
+
+  if (toggleCLientList) {
+    return (
+      <ChooseClient
+        clientList={allClients?.getAllClients}
+        client={idClient}
+        setValue={changeClient}
+        hideDialog={toggleClientListAction}
+      />
+    );
+  }
+
+  if (toggleStatusList) {
+    return (
+      <ChooseClient
+        clientList={allStatus?.getAllStatus}
+        client={idStatus}
+        setValue={changeStatus}
+        hideDialog={toggleStatusListAction}
+      />
+    );
   }
 
   return (
@@ -74,7 +140,7 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
               label="Cliente"
               autoCapitalize="none"
               value={client?.name || ''}
-              onPressIn={() => console.log('press')}
+              onPressIn={toggleClientListAction}
               disabled
             />
           </ContainerInput>
@@ -83,7 +149,7 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
               label="Status"
               autoCapitalize="none"
               value={status?.name || ''}
-              onPressIn={() => console.log('press')}
+              onPressIn={toggleStatusListAction}
               disabled
             />
           </ContainerInput>
