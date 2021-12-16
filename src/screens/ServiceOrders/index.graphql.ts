@@ -37,6 +37,9 @@ export const GET_ALL_SERVICE_ORDERS = gql`
         name
         types
       }
+      content {
+        value
+      }
     }
   }
 `;

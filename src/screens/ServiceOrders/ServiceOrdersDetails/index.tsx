@@ -58,7 +58,7 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
     order?.description || '',
   );
   const [notes, setNotes] = useState<string>(order?.notes || '');
-  const [value, setValue] = useState<string>(formatReal(order?.value) || '0');
+  const [value, setValue] = useState<string>(order?.content?.value || '0');
 
   const [toggleCLientList, setToggleClientList] = useState<boolean>(false);
   const [toggleStatusList, setToggleStatusList] = useState<boolean>(false);

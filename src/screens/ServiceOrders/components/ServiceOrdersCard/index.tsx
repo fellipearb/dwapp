@@ -8,16 +8,20 @@ interface IServiceOrdersCard {
 }
 
 const ServiceOrdersCard = ({ order, goToDetails }: IServiceOrdersCard) => {
-  const { client, equipment, brand, images } = order;
+  const { id, client, equipment, brand, images, status, content } = order;
   const image = images?.length ? images[0].path : 'https://picsum.photos/700';
 
   return (
     <Card>
       <Card.Content>
         <Title>{client?.name}</Title>
-        <Paragraph>{equipment}</Paragraph>
+        <Paragraph>OS: {id}</Paragraph>
         <Paragraph>
-          {brand}
+          {equipment} {brand}
+        </Paragraph>
+        <Paragraph>Status: {status?.name}</Paragraph>
+        <Paragraph>
+          {content.value}
           {'\n'}
         </Paragraph>
       </Card.Content>

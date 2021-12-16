@@ -32,6 +32,9 @@ export interface IServiceOrders {
     name: string;
     types: string;
   };
+  content: {
+    value: string;
+  };
 }
 
 export const ServiceOrders = () => {
