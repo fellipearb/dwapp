@@ -19,6 +19,7 @@ import {
   INSERT_SERVICE_ORDER,
   UPDATE_SERVICE_ORDER,
 } from '../index.graphql';
+import Camera from './components/Camera';
 import ChooseOptions from './components/ChooseOptions';
 import { ContainerImages, Image } from './styles';
 
@@ -65,6 +66,8 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
 
   const [errorModal, setErrorModal] = useState<boolean>(false);
   const [successModal, setSuccessModal] = useState<boolean>(false);
+
+  const [showCamera, setShowCamera] = useState<boolean>(false);
 
   const getInputData = () => {
     return {
@@ -216,6 +219,10 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
     return <Alert {...alertModalError} />;
   }
 
+  if (showCamera) {
+    return <Camera />;
+  }
+
   return (
     <SafeContainer>
       <ContainerView>
@@ -298,6 +305,9 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
               multiline
             />
           </ContainerInput>
+          <Button mode="contained" onPress={() => setShowCamera(true)}>
+            Nova Foto
+          </Button>
           <ContainerImages horizontal={true}>
             {order?.images?.map(image => (
               <Image source={{ uri: image.path }} key={image.id} />
