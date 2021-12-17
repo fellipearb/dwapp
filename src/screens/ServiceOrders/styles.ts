@@ -17,8 +17,11 @@ export const ButtonServiceOrder = styled(Button)`
   justify-content: center;
 `;
 
-export const ContainerButtons = styled.View`
-  justify-content: space-between;
+export const ContainerButtons = styled.ScrollView`
   flex-direction: row;
   margin: 8px 0 16px;
+`;
+
+export const ButtonFilter = styled(Button)`
+  margin-right: 16px;
 `;
