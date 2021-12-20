@@ -29,3 +29,14 @@ export const ButtonTakePhoto = styled(Button)`
   border-radius: 30px;
   margin: 0 8px;
 `;
+
+export const ButtonFlash = styled(Button)`
+  background: #fff;
+  width: 60px;
+  height: 60px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px;
+  margin: 0 8px;
+  opacity: ${(props: { flash: boolean }) => (props.flash ? 1 : 0.5)};
+`;

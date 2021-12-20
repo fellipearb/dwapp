@@ -3,6 +3,7 @@ import { RNCamera } from 'react-native-camera';
 import {
   CameraRN,
   ButtonTakePhoto,
+  ButtonFlash,
   Container,
   ContainerButtonTakePhoto,
 } from './styles';
@@ -48,10 +49,11 @@ export const Camera = ({ onTakePicture, toggleShowCamera }: ICamera) => {
       <ContainerButtonTakePhoto>
         {
           //@ts-ignore
-          <ButtonTakePhoto
+          <ButtonFlash
             icon="flash"
             onPress={() => setFlash(!flash)}
             compact
+            flash={flash}
           />
         }
         {
