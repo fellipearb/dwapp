@@ -18,6 +18,8 @@ export const GET_ALL_CLIENTS = gql`
       id
       content {
         tel
+        cpf
+        cep
       }
     }
   }

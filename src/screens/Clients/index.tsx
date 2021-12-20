@@ -9,7 +9,7 @@ import {
 import Loading from '../../components/Loading';
 import { GET_ALL_CLIENTS } from './index.graphql';
 import { ButtonClient, TextItem } from './styles';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 export interface IClient {
   notes: string;
@@ -27,6 +27,8 @@ export interface IClient {
   id: number;
   content: {
     tel: string;
+    cep: string;
+    cpf: string;
   };
 }
 
@@ -38,7 +40,7 @@ const Clients = () => {
     navigation.navigate('ClientsDetailsScreen', { client });
   };
 
-  const { data, loading } = useQuery(GET_ALL_CLIENTS, {
+  const { data, loading, refetch } = useQuery(GET_ALL_CLIENTS, {
     fetchPolicy: 'network-only',
   });
 
@@ -57,6 +59,10 @@ const Clients = () => {
   );
 
   const clients = filterClients(search);
+
+  useFocusEffect(() => {
+    refetch();
+  });
 
   if (loading) {
     return <Loading />;
@@ -95,11 +101,11 @@ const Clients = () => {
                   description="Email"
                 />
                 <List.Item
-                  title={() => <TextItem>{client.cpf}</TextItem>}
+                  title={() => <TextItem>{client.content.cpf}</TextItem>}
                   description="CPF"
                 />
                 <List.Item
-                  title={() => <TextItem>{client.cep}</TextItem>}
+                  title={() => <TextItem>{client.content.cep}</TextItem>}
                   description="CEP"
                 />
                 <List.Item

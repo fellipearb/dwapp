@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client';
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
@@ -9,6 +10,8 @@ import {
   ContainerView,
   SafeContainer,
 } from '../../../components/Container/styles';
+import { maskCEP, maskCPF, maskPhone } from '../../../utils/formatters';
+import { onlyNumbers } from '../../../utils/money';
 import { INSERT_CLIENT, UPDATE_CLIENT } from '../index.graphql';
 
 interface IClientDetails {
@@ -21,21 +24,26 @@ interface IClientDetails {
 
 const ClientDetails = ({ route }: IClientDetails) => {
   const { client } = route.params;
+  const navigation = useNavigation<any>();
 
   const [name, setName] = useState<string>(client?.name || '');
   const [email, setEmail] = useState<string>(client?.email || '');
-  const [tel, setTel] = useState<string>(client?.tel || '');
-  const [cpf, setCpf] = useState<string>(client?.cpf || '');
-  const [cep, setCep] = useState<string>(client?.cep || '');
+  const [tel, setTel] = useState<string>(client?.content?.tel || '');
+  const [cpf, setCpf] = useState<string>(client?.content?.cpf || '');
+  const [cep, setCep] = useState<string>(client?.content?.cep || '');
   const [street, setStreet] = useState<string>(client?.street || '');
   const [number, setNumber] = useState<string>(client?.number || '');
   const [district, setDistrict] = useState<string>(client?.district || '');
   const [city, setCity] = useState<string>(client?.city || '');
-  const [state, setState] = useState<string>(client?.cep || '');
+  const [state, setState] = useState<string>(client?.state || '');
   const [complement, setComplement] = useState<string>(
     client?.complement || '',
   );
   const [notes, setNotes] = useState<string>(client?.notes || '');
+
+  const onChangeCep = (text: string) => setCep(maskCEP(text));
+  const onChangeCpf = (text: string) => setCpf(maskCPF(text));
+  const onChangePhone = (text: string) => setTel(maskPhone(text));
 
   const getInputData = () => {
     return {
@@ -46,9 +54,9 @@ const ClientDetails = ({ route }: IClientDetails) => {
       district,
       number,
       street,
-      cep,
-      cpf,
-      tel,
+      cep: onlyNumbers(cep),
+      cpf: onlyNumbers(cpf),
+      tel: onlyNumbers(tel),
       email,
       name,
       id: client?.id,
@@ -62,14 +70,20 @@ const ClientDetails = ({ route }: IClientDetails) => {
     title: 'Erro',
     text: 'Erro ao atualizar cliente',
     visible: true,
-    toggleDialog: () => setErrorModal(false),
+    toggleDialog: () => {
+      setErrorModal(false);
+      navigation.goBack();
+    },
   };
 
   const alertModalSuccess = {
     title: 'Sucesso!',
     text: 'Sucesso ao inserir/atualizar cliente',
     visible: true,
-    toggleDialog: () => setSuccessModal(false),
+    toggleDialog: () => {
+      setSuccessModal(false);
+      navigation.goBack();
+    },
   };
 
   const [doInsert, { loading: INSERT_LOADING }] = useMutation(INSERT_CLIENT, {
@@ -133,7 +147,7 @@ const ClientDetails = ({ route }: IClientDetails) => {
               label="Telefone"
               autoCapitalize="none"
               value={tel}
-              onChangeText={text => setTel(text)}
+              onChangeText={text => onChangePhone(text)}
               keyboardType="numeric"
             />
           </ContainerInput>
@@ -142,7 +156,7 @@ const ClientDetails = ({ route }: IClientDetails) => {
               label="CPF"
               autoCapitalize="none"
               value={cpf}
-              onChangeText={text => setCpf(text)}
+              onChangeText={text => onChangeCpf(text)}
               keyboardType="numeric"
             />
           </ContainerInput>
@@ -151,7 +165,7 @@ const ClientDetails = ({ route }: IClientDetails) => {
               label="CEP"
               autoCapitalize="none"
               value={cep}
-              onChangeText={text => setCep(text)}
+              onChangeText={text => onChangeCep(text)}
               keyboardType="numeric"
             />
           </ContainerInput>
