@@ -36,6 +36,8 @@ export interface IServiceOrders {
   images?: {
     id: number;
     path: string;
+    new?: boolean;
+    file?: string;
   }[];
   status?: {
     id: number;

@@ -1,8 +1,20 @@
-import React, { useRef } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useRef, useState } from 'react';
 import { RNCamera } from 'react-native-camera';
+import {
+  CameraRN,
+  ButtonTakePhoto,
+  Container,
+  ContainerButtonTakePhoto,
+} from './styles';
 
-export const Camera = () => {
+interface ICamera {
+  onTakePicture: (base64: string) => void;
+  toggleShowCamera: (show: boolean) => void;
+}
+
+export const Camera = ({ onTakePicture, toggleShowCamera }: ICamera) => {
+  const [flash, setFlash] = useState(false);
+
   const cameraRef = useRef(null);
 
   const takePicture = async () => {
@@ -10,17 +22,22 @@ export const Camera = () => {
       const options = { quality: 0.5, base64: true };
       //@ts-ignore
       const data = await cameraRef?.current?.takePictureAsync(options);
-      console.log(data.base64);
+
+      onTakePicture(data.base64);
+      toggleShowCamera(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <RNCamera
+    <Container>
+      <CameraRN
         ref={cameraRef}
-        style={styles.preview}
         type={RNCamera.Constants.Type.back}
-        flashMode={RNCamera.Constants.FlashMode.on}
+        flashMode={
+          flash
+            ? RNCamera.Constants.FlashMode.on
+            : RNCamera.Constants.FlashMode.off
+        }
         androidCameraPermissionOptions={{
           title: 'Permissão para usar camera',
           message: 'Precisamos de permissão para usar sua camera!',
@@ -28,35 +45,22 @@ export const Camera = () => {
           buttonNegative: 'Cancel',
         }}
       />
-      <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-        <TouchableOpacity onPress={takePicture} style={styles.capture}>
-          <Text style={{ fontSize: 14 }}> SNAP </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      <ContainerButtonTakePhoto>
+        {
+          //@ts-ignore
+          <ButtonTakePhoto
+            icon="flash"
+            onPress={() => setFlash(!flash)}
+            compact
+          />
+        }
+        {
+          //@ts-ignore
+          <ButtonTakePhoto icon="camera" onPress={takePicture} compact />
+        }
+      </ContainerButtonTakePhoto>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: 'black',
-  },
-  preview: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  capture: {
-    flex: 0,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 15,
-    paddingHorizontal: 20,
-    alignSelf: 'center',
-    margin: 20,
-  },
-});
 
 export default Camera;

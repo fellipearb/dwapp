@@ -69,7 +69,11 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
 
   const [showCamera, setShowCamera] = useState<boolean>(false);
 
+  const [images, setImages] = useState(order?.images || []);
+
   const getInputData = () => {
+    const imagesToInsert = images.filter(image => image.new);
+
     return {
       id: order?.id,
       client_id: parseInt(idClient, 10),
@@ -81,7 +85,13 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
       description,
       notes,
       value: value ? formatFloatValue(value) : 0,
-      // images: null,
+      images: imagesToInsert
+        ? imagesToInsert.map(image => ({
+            id: 0,
+            service_orders_id: 0,
+            file: image.path,
+          }))
+        : null,
     };
   };
 
@@ -128,8 +138,9 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
       onCompleted: () => {
         setSuccessModal(true);
       },
-      onError: () => {
+      onError: err => {
         setErrorModal(true);
+        console.log(err);
       },
     },
   );
@@ -185,6 +196,17 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
     toggleDialog: () => setSuccessModal(false),
   };
 
+  const onTakePicture = (base64: string) => {
+    setImages([
+      {
+        id: new Date().getTime(),
+        path: `data:image/jpeg;base64,${base64}`,
+        new: true,
+      },
+      ...images,
+    ]);
+  };
+
   if (CLIENT_LOADING || STATUS_LOADING) {
     return <Loading />;
   }
@@ -220,7 +242,9 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
   }
 
   if (showCamera) {
-    return <Camera />;
+    return (
+      <Camera onTakePicture={onTakePicture} toggleShowCamera={setShowCamera} />
+    );
   }
 
   return (
@@ -233,7 +257,6 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
               autoCapitalize="none"
               value={client?.name || ''}
               onPressIn={toggleClientListAction}
-              disabled
             />
           </ContainerInput>
           <ContainerInput>
@@ -242,7 +265,6 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
               autoCapitalize="none"
               value={status?.name || ''}
               onPressIn={toggleStatusListAction}
-              disabled
             />
           </ContainerInput>
           <ContainerInput>
@@ -305,11 +327,14 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
               multiline
             />
           </ContainerInput>
-          <Button mode="contained" onPress={() => setShowCamera(true)}>
+          <Button
+            icon="camera"
+            mode="contained"
+            onPress={() => setShowCamera(true)}>
             Nova Foto
           </Button>
           <ContainerImages horizontal={true}>
-            {order?.images?.map(image => (
+            {images?.map(image => (
               <Image source={{ uri: image.path }} key={image.id} />
             ))}
           </ContainerImages>
