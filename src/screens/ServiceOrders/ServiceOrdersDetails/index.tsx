@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
@@ -33,6 +34,7 @@ interface IClientDetails {
 
 const ServiceOrdersDetails = ({ route }: IClientDetails) => {
   const { order } = route.params;
+  const navigation = useNavigation<any>();
 
   /**
    * FIELDS
@@ -91,7 +93,7 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
             service_orders_id: 0,
             file: image.path,
           }))
-        : null,
+        : [],
     };
   };
 
@@ -186,14 +188,20 @@ const ServiceOrdersDetails = ({ route }: IClientDetails) => {
     title: 'Erro',
     text: 'Erro ao inserir/atualizar OS',
     visible: true,
-    toggleDialog: () => setErrorModal(false),
+    toggleDialog: () => {
+      setSuccessModal(false);
+      navigation.goBack();
+    },
   };
 
   const alertModalSuccess = {
     title: 'Sucesso!',
     text: 'Sucesso ao inserir/atualizar OS',
     visible: true,
-    toggleDialog: () => setSuccessModal(false),
+    toggleDialog: () => {
+      setSuccessModal(false);
+      navigation.goBack();
+    },
   };
 
   const onTakePicture = (base64: string) => {
