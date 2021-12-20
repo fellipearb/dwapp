@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { Drawer } from 'react-native-paper';
-import { Container, Background } from './styles';
+import { Container, Background, ContainerItems } from './styles';
 
 interface IMenu {
   closeMenu: () => void;
@@ -26,22 +26,24 @@ const Menu = ({ closeMenu, showMenu }: IMenu) => {
 
   return (
     <>
-      <Container showMenu={showMenu}>
-        <Drawer.Section title="Menu">
-          <Drawer.Item label="Home" onPress={() => goTo('HomeScreen')} />
-          <Drawer.Item
-            label="Clientes"
-            onPress={() => goTo('ClientsScreen', 'ClientStackScreen')}
-          />
-          <Drawer.Item
-            label="Ordens de serviços"
-            onPress={() =>
-              goTo('ServiceOrdersScreen', 'ServiceOrdersStackScreen')
-            }
-          />
-        </Drawer.Section>
+      <Container>
+        <Background onPress={closeMenu} />
+        <ContainerItems>
+          <Drawer.Section title="Menu">
+            <Drawer.Item label="Home" onPress={() => goTo('HomeScreen')} />
+            <Drawer.Item
+              label="Clientes"
+              onPress={() => goTo('ClientsScreen', 'ClientStackScreen')}
+            />
+            <Drawer.Item
+              label="Ordens de serviços"
+              onPress={() =>
+                goTo('ServiceOrdersScreen', 'ServiceOrdersStackScreen')
+              }
+            />
+          </Drawer.Section>
+        </ContainerItems>
       </Container>
-      <Background onPress={closeMenu} showMenu={showMenu} />
     </>
   );
 };
